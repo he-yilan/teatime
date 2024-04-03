@@ -34,22 +34,59 @@
 <div class="submenu">
   <div class="header">Tea Time! A Realistic Teapot Simulation</div>
   <div class="subheader center">CS 184/284A: Computer Graphics and Imaging, Spring 2024</div>
-  <div class="subheader center">Elana Ho</div> <!-- TODO: add your name here! -->
+  <div class="subheader center">Elana Ho, Nikhil Ograin, Austin George, Josiah Adrineda</div>
   <br /><hr />
 
-  <div class="content-item overview">
+  <div class="content-item summary">
     <div class="subheader center">Summary</div>
     <p>We hope to create a realistic 3D rendering of a teapot pouring tea into a teacup. The final result aims to showcase the interaction of particle physics in the liquid tea and gaseous steam in addition to the material rendering of the teapot and teacup.</p>
-    <!--    TODO-->
     <br /><hr />
   </div>
 
-  <div class="content-item part1">
-    <a class="anchor" id="part1"></a>
-    <div class="subheader center">Part 1</div>
-    <!--    TODO-->
+  <div class="content-item problem">
+    <a class="anchor" id="problem"></a>
+    <div class="subheader center">Problem</div>
+    <p>In computer graphics, simulating realistic interactions between different materials and elements is often challenging. For example, pouring hot liquid from one container into another requires fluid dynamics, particle physics, and material properties all to be accurately depicted and cohesive in the scene. By creating our teapot scene, we aim to address these issues in our project.</p>
+
+    <p>Specific challenges:</p>
+    <ol>
+      <li>We will need to define the particle physics for animating fluid dynamics and volumetric rendering which we have not yet covered in depth in this course.</li>
+      <li>We must apply a bounding area for the flow of fluids so that the stream of tea is controlled in the scene, originating from the teapot and ending at the teacup. </li>
+      <li>To enrich the visuals in the scene, we hope to implement caustics and rendering of different materials which requires deeper exploration of pathtracing.</li>
+    </ol>
+
+    <p>Our solution:</p>
+    <ol>
+      <li>Because fluid dynamics and volumetric rendering have been heavily studied in computer graphics, we hope to reference existing literature to guide our implementation. In addition, open source resources such as libraries for particle simulation would also aide us in accomplishing this goal. </li>
+      <li>We must define the teapot and teacup as containers that block the movement of particles. Thus, this should be taken into consideration when calculating particle collisions. </li>
+      <li>We will use and expand on our knowledge from Homework 3: Pathtracer to integrate more subtleties for translucent liquid and different surfaces.</li>
+    </ol>
+
     <br /><hr />
   </div>
+
+  <div class="content-item deliverables">
+    <a class="anchor" id="deliverable"></a>
+    <div class="subheader center">Goals & Deliverabls</div>
+    <p>In pursuit of achieving a realistic teapot simulation, we've outlined the following goals:</p>
+    <ul>
+      <li>Simulation of the particle physics and fluid dynamics of tea being poured and clouds of steam</li>
+      <li>Material rendering of a teaset made of porcelain and transparent glass</li>
+      <li>Simulation of the caustics of translucent liquids</li>
+    </ul>
+
+    <p>For each of these goals, we will evaluate the performance of the system qualitatively based on realism. As for quantifiable metrics, seconds per frame for a given render will measure its efficiency. </p>
+    <br /><hr />
+  </div>
+
+  <div class="content-item liquid">
+    <a class="anchor" id="liquid"></a>
+    <div class="subheader center">Fluid Dynamics & Particle Physics: Liquid</div>
+    <p>To simulate fluid dynamics, we plan to use a particle-based approach using Lagrangian techniques. Although they may not be as accurate as grid-based simulations, particle-based simulations are known to be faster, more feasible to implement and understand, and more suited for real-time applications. Given the large body of literature on the topic of particle simulations in computer graphics and online resources, we believe that we will be able to accomplish this in our project. </p>
+    <br /><hr />
+  </div>
+
+
 
 
 </div>
