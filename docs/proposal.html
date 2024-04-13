@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+  <link type="text/css" rel="stylesheet" href="style.css">
+
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link type="image/png" rel="icon" href="images/icon.png">
+
+  <title>CS 184 Homework 4: Cloth Sim</title>
+</head>
+<body>
+<div class="menu">
+  <ul>
+    <li class="nonlogo"><a href="./proposal.html">PROPOSAL</a></li>
+    <li class="nonlogo"><a href="./milestone.html">MILESTONE</a></li>
+    <li class="nonlogo"><a href="./index.html">WRITEUP</a></li>
+    <li class="nonlogo"><a href="https://github.com/he-yilan/teatime" target="_blank">CODE <i style="font-size:12px" class="fa">&#xf08e;</i></a></li>
+  </ul>
+</div>
+
+<div class="submenu">
+  <div class="header">Tea Time! A Realistic Teapot Simulation</div>
+  <div class="subheader center">CS 184/284A: Computer Graphics and Imaging, Spring 2024</div>
+  <div class="subheader center">Elana Ho, Nikhil Ograin, Austin George, Josiah Adrineda</div>
+  <br /><hr />
+
+  <div class="content-item summary">
+    <div class="subheader center">Summary</div>
+    <p>We hope to create a realistic 3D rendering of a teapot pouring tea into a teacup. The final result aims to showcase the interaction of particle physics in the liquid tea and gaseous steam in addition to the material rendering of the teapot and teacup.</p>
+    <br /><hr />
+  </div>
+
+  <div class="content-item problem">
+    <a class="anchor" id="problem"></a>
+    <div class="subheader center">Problem</div>
+    <p>In computer graphics, simulating realistic interactions between different materials and elements is often challenging. For example, pouring hot liquid from one container into another requires fluid dynamics, particle physics, and material properties all to be accurately depicted and cohesive in the scene. By creating our teapot scene, we aim to address these issues in our project.</p>
+
+    <p>Specific challenges:</p>
+    <ol>
+      <li>We will need to define the particle physics for animating fluid dynamics and volumetric rendering which we have not yet covered in depth in this course.</li>
+      <li>We must apply a bounding area for the flow of fluids so that the stream of tea is controlled in the scene, originating from the teapot and ending at the teacup. </li>
+      <li>To enrich the visuals in the scene, we hope to implement caustics and rendering of different materials which requires deeper exploration of pathtracing.</li>
+    </ol>
+
+    <p>Our solution:</p>
+    <ol>
+      <li>Because fluid dynamics and volumetric rendering have been heavily studied in computer graphics, we hope to reference existing literature to guide our implementation. In addition, open source resources such as libraries for particle simulation would also aid us in accomplishing this goal. </li>
+      <li>We must define the teapot and teacup as containers that block the movement of particles. Thus, this should be taken into consideration when calculating particle collisions. </li>
+      <li>We will use and expand on our knowledge from Homework 3: Pathtracer to integrate more subtleties for translucent liquid and different surfaces.</li>
+    </ol>
+
+    <br /><hr />
+  </div>
+
+  <div class="content-item deliverables">
+    <a class="anchor" id="deliverable"></a>
+    <div class="subheader center">Goals & Deliverabls</div>
+    <p>In pursuit of achieving a realistic teapot simulation, we outline the following goals:</p>
+    <ul>
+      <li>Simulation of the <b>particle physics</b> and <b>fluid dynamics</b>  of tea being poured and clouds of steam</li>
+      <li><b>Material rendering</b> of a teaset made of porcelain and transparent glass</li>
+      <li>Simulation of the <b>caustics</b> of translucent liquids</li>
+    </ul>
+
+    <p>For each of these goals, we will evaluate the performance of the system qualitatively based on realism. As for quantifiable metrics, seconds per frame for a given render will measure its efficiency. </p>
+    <br /><hr />
+  </div>
+
+  <div class="content-item liquid">
+    <a class="anchor" id="liquid"></a>
+    <div class="subheader center">Fluid Dynamics & Particle Physics: Liquid</div>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/liquid1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/liquid2.gif" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/liquid3.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+    <p>To simulate fluid dynamics, we plan to use a particle-based approach using Lagrangian techniques. Although they may not be as accurate as grid-based simulations, particle-based simulations are known to be faster, more feasible to implement and understand, and more suited for real-time applications. Given the large body of literature on the topic of particle simulations in computer graphics and online resources, we believe that we will be able to accomplish this in our project. </p>
+
+    <p> We plan to make this particle system generalizable to different parameters such as viscosity, color, and transparency to facilitate the simulation of different liquids&#x2014;for example, water, milk, and honey&#x2014;as an additional feature!</p>
+
+    <br /><hr />
+  </div>
+
+  <div class="content-item steam">
+    <a class="anchor" id="steam"></a>
+    <div class="subheader center">Fluid Dynamics & Particle Physics: Steam</div>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/steam1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/steam2.gif" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/steam3.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <p>Mist, smoke, steam, etc. all behave similarly to liquids&#x2014;this has been modeled via the Navier-Stokes equations. As such, we extend the system used to simulate liquids to also simulate steam. We plan on designing an over-arching SPH (Smoothed-Particle Hydrodynamics) framework using one of the C++ fluid simulation libraries (in Resources). Both tea and steam particles will inherit from this framework, with steam particles using a slightly modified version of the Navier-Stokes equations&#x2014;namely the incompressible Euler equations (with some potential optimizations by Fedkiw, Stam, and Jensen)&#x2014;which were designed specifically to model the behavior of gases.</p>
+
+    <br /><hr />
+  </div>
+
+
+  <div class="content-item material">
+    <a class="anchor" id="material"></a>
+    <div class="subheader center">Material Rendering</div>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/material1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/material2.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/material3.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <p>To implement realistic material rendering, we plan to use a BSSRDF model. In contrast to a conventional BRDF, this allows subsurface scattering of light through a material. For the use case of a teapot, this is useful for simulating materials which light may not fully reflect off of, for instance the edges of an unglazed ceramic. Implementing a BSSRDF as the baseline model for this project also allows the material of the teapot to be modified to a translucent or semi-translucent material as desired in stretch goals. This is a topic which has been widely covered in literature for at least 20 years and is touched upon briefly as part of the CS 184 course concepts, providing clear steps for implementation as part of this project.</p>
+
+    <p>Given our quantitative metric of seconds per frame, a BSSRDF may not provide a substantial increase in visual quality given the decrease in rendering speed compared to a conventional BRDF. To resolve this issue, if deemed necessary we will use a BRDF approximation of a BSSRDF as described by Jensen et al (2001). This would increase rendering speed while ideally maximizing visual quality.</p>
+
+    <br /><hr />
+  </div>
+
+
+  <div class="content-item caustics">
+    <a class="anchor" id="caustics"></a>
+    <div class="subheader center">Caustic Rendering</div>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/caustic1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/caustic2.gif" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/caustic3.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/caustic4.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/caustic5.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/caustic6.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <p>Caustics are the patterns of bright light that appear when a light source is refracted by a specular surface onto a diffuse surface. They are the sparkles of light we observe on a table when light shines through a glass of tea. </p>
+
+    <p>Monte Carlo ray tracing algorithms (like in HW3) fail to reliably produce caustic lighting, as a result of the low probability of sampling the appropriate light rays through specular materials. Thus, we are motivated to explore a photon mapping approach to global illumination. The traditional photon mapping algorithm introduced by Jensen involves two passes: (1) trace all photons and store where they end up (2) trace camera rays and observe how many photons are neighboring each ray-surface intersection. This process can produce caustic lighting but becomes memory intensive to store all photons and results in noise if the photon count is reduced to conserve memory.</p>
+
+    <p>We therefore plan to build on this algorithm with the ideas of Hachisuka et al., by progressively storing batches of photons, calculating their light contribution to camera rays, and then immediately discarding the photons before the next pass. This helps conserve the total amount of memory used at any given time, while also allowing us to scale up the number of photons emitted to reduce noise.</p>
+    <br /><hr />
+  </div>
+
+  <div class="content-item stretch">
+    <a class="anchor" id="stretch"></a>
+    <div class="subheader center">Stretch Goals</div>
+    <p>If we implement the aforementioned baseline goals ahead of schedule, we hope to deliver the following stretch goals:</p>
+
+    <ul>
+      <li>Simulate an interactive mouse-controlled teapot that can be dragged to different positions to pour tea into a teacup</li>
+      <li>Simulate a fly-in shot by panning the camera along a B&eacute;zier curve </li>
+      <li>Render different materials for the teapot, teacup, and saucer</li>
+    </ul>
+    <br /><hr />
+  </div>
+
+  <div class="content-item Schedule">
+    <a class="anchor" id="schedule"></a>
+    <div class="subheader center">Schedule</div>
+
+    <p>Week 1</p>
+    <ul>
+      <li>Setup rendering framework and create all skeleton classes</li>
+      <li>Model teapot, teacup, and saucer</li>
+      <li>Begin implementing basic components of the fluid simulation</li>
+      <li style="list-style-type:none">
+        <ul>
+          <li>Familiarize ourselves with libraries that may assist in particle simulations </li>
+          <li>Reference pseudocode found in research papers </li>
+        </ul>
+      </li>
+      <li>Implement material rendering for the teapot and teacup, focusing on basic shading and texture mapping</li>
+    </ul>
+
+    <p>Week 2</p>
+    <ul>
+      <li>Finish implementing material rendering of porcelain</li>
+      <li>Finish particle physics engine for liquids and gases</li>
+    </ul>
+
+    <p>Week 3</p>
+    <ul>
+      <li>Finish implementing material rendering of transparent glass</li>
+      <li>Finish implementing caustic rendering of tea through transparent containers</li>
+      <li>Finish basic realistic rendering of liquid and gases with light and shadows</li>
+      <li>Integrate simulation and rendering components into a cohesive system</li>
+    </ul>
+
+    <p>Week 4</p>
+    <ul>
+      <li>Optimize material rendering and tune parameters</li>
+      <li>Refine the fluid simulation to improve realism and performance</li>
+      <li>Buffer time</li>
+      <li>Stretch goals</li>
+    </ul>
+    <br /><hr />
+  </div>
+
+  <div class="content-item resources">
+    <a class="anchor" id="resources"></a>
+    <div class="subheader center">Resources</div>
+    <p>Braley, C., & Sandu, A. (2010). Fluid simulation for computer graphics: A tutorial in grid based and particle based methods. <i>Virginia Tech, Blacksburg.</i></p>
+
+    <p>Deng et al (2022). Reconstructing Translucent Objects using Differentiable Rendering. <i>Cornell University.</i></p>
+
+    <p>Fedkiw, R., Stam, J., & Jensen, H. W. (2001, August 1). <i>Visual simulation of smoke: Proceedings of the 28th Annual Conference on Computer Graphics and interactive techniques.</i> ACM Conferences. https://dl.acm.org/doi/abs/10.1145/383259.383260 </p>
+
+    <p>Hachisuka, T., Ogaki, S., & Jensen, H. W. (2008). Progressive photon mapping.<i>ACM Trans. Graph.,</i>27(5). doi:10.1145/1409060.1409083</p>
+
+    <p>Jensen et al. (2001). A Practical Model for Subsurface Light Transport. <i>Stanford University.</i></p>
+
+    <p>Jensen (1996). Global Illumination using Photon Maps. <i>Rendering Techniques </i>'96.</p>
+
+    <p>Montes, R., & Ure&ntilde;a, C. (2012). An Overview of BRDF Models. <i>University of Granada.</i></p>
+
+    <p>Fluid simulation libraries in C++: </p>
+    <ul>
+      <li><a href="https://google.github.io/liquidfun/">liquidfun</a></li>
+      <li><a href="https://github.com/InteractiveComputerGraphics/SPlisHSPlasH">SPlisHSPlasH</a></li>
+    </ul>
+
+    <br /><hr />
+  </div>
+
+
+</div>
+</body>
+</html>
