@@ -2,8 +2,8 @@
 #define TEATIME_UTIL_H
 
 #include <cstdio>
-#include <malloc.h>
+#include <cstdlib>
 
-void readFile(const char *filepath, char *&out);
+void readFile(const char *filepath, char *&out, long *fileSize);
 
 #endif //TEATIME_UTIL_H

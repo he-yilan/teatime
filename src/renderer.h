@@ -8,9 +8,12 @@
 
 #include <memory>
 
+#include "triangle.h"
+
+
 class Renderer {
 public:
-    Renderer();
+    Renderer(std::vector<Triangle> &triangles);
     void render();
     bool isAlive();
 

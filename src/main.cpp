@@ -62,7 +62,7 @@ void createGLContexts() {
 unsigned int loadShaderFromFile(const char *filepath, GLenum type) {
   unsigned int shaderHandle = glCreateShader(type);
   char *shaderSource = nullptr;
-  readFile(filepath, shaderSource);
+  readFile(filepath, shaderSource, nullptr);
   glShaderSource(shaderHandle, 1, &shaderSource, nullptr);
   glCompileShader(shaderHandle);
   int success;
@@ -125,14 +125,34 @@ void setGLFWCallbacks() {
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 }
 
+void loadBinarySTL(const char *filepath, std::vector<Triangle> &out) {
+  char *fileBytes = nullptr;
+  long fileSize = -1;
+  readFile(filepath, fileBytes, &fileSize);
+
+  vec3c color = {0.25f, 0.25f, 0.25f};
+  int stride = 3 * sizeof(float);
+  for (int i = 84; i < fileSize; i += 50) {
+    Triangle t;
+    t.c0 = t.c1 = t.c2 = color;
+    memcpy(&t.p0, &fileBytes[i], stride);
+    memcpy(&t.p1, &fileBytes[i + (2 * stride)], stride);
+    memcpy(&t.p2, &fileBytes[i + (4 * stride)], stride);
+    out.emplace_back(t);
+  }
+}
+
 int main(int argc, char **argv) {
+  srand(5818);
   glfwSetErrorCallback(error_callback);
 
   createGLContexts();
   setGLFWCallbacks();
   createShaders();
 
-  renderer = new Renderer();
+  std::vector<Triangle> triangles = std::vector<Triangle>();
+  loadBinarySTL("../models/cake.stl", triangles);
+  renderer = new Renderer(triangles);
 
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();

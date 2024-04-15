@@ -1,32 +1,31 @@
 #include "renderer.h"
 
-Renderer::Renderer() {
-  float vertices[] = {
-          // positions         // colors
-          0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-          -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-          0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top
-
-  };
+Renderer::Renderer(std::vector<Triangle> &triangles) {
+  int n = triangles.size();
+  float *arrayBuffer = static_cast<float *>(calloc(n * 6, sizeof(float)));
+  int stride = 6 * sizeof(float);
+  for (int i = 0; i < n; i++) {
+    memcpy(arrayBuffer + (i * stride), &triangles.at(i), stride);
+  }
 
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
-  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
   glBindVertexArray(VAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(arrayBuffer), arrayBuffer, GL_DYNAMIC_DRAW);
 
-  // position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, n, GL_FLOAT, GL_FALSE, stride, (void*) nullptr);
   glEnableVertexAttribArray(0);
-  // color attribute
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+  glVertexAttribPointer(1, n, GL_FLOAT, GL_FALSE, stride, (void*)(n * sizeof(float)));
   glEnableVertexAttribArray(1);
+
+  glBindVertexArray(VAO);
+  free(arrayBuffer);
 }
 
 void Renderer::render() {
-  glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
