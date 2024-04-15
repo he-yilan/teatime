@@ -8,21 +8,21 @@ void SPH::Update(Fluid *f) {
 
   //Update density, pressure
   for (int i = 0; i < num_particles; i++) {
-    Particle p = f->particles.at(i);
-    vector<Particle *> *neighbors; // TODO: make function to get neighbors
-    p.density = Density(&p, neighbors);
-    p.pressure = Pressure(f, p.density);
+    Particle *p = f->particles.at(i);
+    vector<Particle *> neighbors = f->particles; //TODO: Currently setting all particles as neighbors
+    p->density = Density(p, &neighbors);
+    p->pressure = Pressure(f, p->density);
   }
 
   //Update acceleration
   for (int i = 0; i < num_particles; ++i) {
-    Particle p = f->particles.at(i);
+    Particle *p = f->particles.at(i);
     vector<Particle *> *neighbors;
     // Get neighbors for Particle P (KD-tree, todo: import (ANN?) library)
     // Calculate density using neighbors (todo: why do we need to calculate this? we can just grab the particle's density, right?)
-    Vector3D acceleration = Acceleration(f, neighbors, &p);
+    Vector3D acceleration = Acceleration(f, neighbors, p);
     //p.forces = acceleration * p.mass; //  F = ma
-    p.position += (acceleration * delta_t * delta_t); //todo: consider adding (pm->position - pm->last_position) to Verlet Integration for more exaggerated movements
+    p->position += (acceleration * delta_t * delta_t); //todo: consider adding (pm->position - pm->last_position) to Verlet Integration for more exaggerated movements
     // Move P using acceleration and delta_t (todo: should we only modify forces and leave position to a higher-level process?
     // delta_v = acceleration on particle p due to pressure + viscosity + gravity + external forces
   }
