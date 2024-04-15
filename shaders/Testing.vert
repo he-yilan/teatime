@@ -1,9 +1,17 @@
 #version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-out vec3 ourColor;
+
+uniform mat3 u_view_projection;
+
+in vec3 in_position;
+in vec3 in_color;
+in vec3 in_normal;
+
+out vec3 v_position;
+out vec3 v_normal;
 
 void main() {
-   gl_Position = vec4(aPos, 1.0);
-   ourColor = aColor;
+  v_position = in_position;
+  v_normal = in_normal;
+
+  gl_Position = vec4(in_position, 1);
 }

@@ -80,7 +80,7 @@ void createShaders() {
   unsigned int vertexShader = loadShaderFromFile("../shaders/Testing.vert", GL_VERTEX_SHADER);
   unsigned int fragmentShader = loadShaderFromFile("../shaders/Testing.frag", GL_FRAGMENT_SHADER);
 
-  unsigned int shaderProgram = glCreateProgram();
+  GLint shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
   glLinkProgram(shaderProgram);
@@ -130,14 +130,15 @@ void loadBinarySTL(const char *filepath, std::vector<Triangle> &out) {
   long fileSize = -1;
   readFile(filepath, fileBytes, &fileSize);
 
-  vec3c color = {0.25f, 0.25f, 0.25f};
+  vec3c color = {0.75f, 0.75f, 0.75f};
   int stride = 3 * sizeof(float);
   for (int i = 84; i < fileSize; i += 50) {
     Triangle t;
     t.c0 = t.c1 = t.c2 = color;
-    memcpy(&t.p0, &fileBytes[i], stride);
+    memcpy(&t.n, &fileBytes[i], stride);
+    memcpy(&t.p0, &fileBytes[i + (1 * stride)], stride);
     memcpy(&t.p1, &fileBytes[i + (2 * stride)], stride);
-    memcpy(&t.p2, &fileBytes[i + (4 * stride)], stride);
+    memcpy(&t.p2, &fileBytes[i + (3 * stride)], stride);
     out.emplace_back(t);
   }
 }
@@ -151,7 +152,7 @@ int main(int argc, char **argv) {
   createShaders();
 
   std::vector<Triangle> triangles = std::vector<Triangle>();
-  loadBinarySTL("../models/cake.stl", triangles);
+  loadBinarySTL("../models/teapot_closed.stl", triangles);
   renderer = new Renderer(triangles);
 
   while (!glfwWindowShouldClose(window)) {

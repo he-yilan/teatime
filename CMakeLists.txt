@@ -21,6 +21,7 @@ endif()
 
 include_guard(GLOBAL)
 set(TEATIME_FILES
+        src/triangle.h
         src/renderer.cpp
         src/renderer.h
         src/util.cpp

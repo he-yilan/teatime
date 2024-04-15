@@ -1,32 +1,55 @@
 #include "renderer.h"
 
 Renderer::Renderer(std::vector<Triangle> &triangles) {
-  int n = triangles.size();
-  float *arrayBuffer = static_cast<float *>(calloc(n * 6, sizeof(float)));
   int stride = 6 * sizeof(float);
-  for (int i = 0; i < n; i++) {
-    memcpy(arrayBuffer + (i * stride), &triangles.at(i), stride);
+  n = triangles.size();
+  float *arrayBuffer = (float*)(calloc(n * sizeof(Triangle), sizeof(float)));
+  for (int i = 0; i < triangles.size(); i++) {
+    memcpy(arrayBuffer + (i * sizeof(Triangle) / sizeof(float)), &triangles.at(i), sizeof(Triangle));
   }
+
+//  float arrayBuffer[] = {
+//          // positions         // colors
+//          0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+//          -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+//          0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,  // top
+//          0.15f, -0.15f, 0.0f,  0.95f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+//          -0.15f, -0.15f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+//          -1.0f,  0.75f, 0.10f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,  // top
+//  };
+//  n = 6;
 
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glBindVertexArray(VAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(arrayBuffer), arrayBuffer, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, n * stride, arrayBuffer, GL_DYNAMIC_DRAW);
 
-  glVertexAttribPointer(0, n, GL_FLOAT, GL_FALSE, stride, (void*) nullptr);
-  glEnableVertexAttribArray(0);
+  GLint shaderProgram;
+  glGetIntegerv(GL_CURRENT_PROGRAM, &shaderProgram);
 
-  glVertexAttribPointer(1, n, GL_FLOAT, GL_FALSE, stride, (void*)(n * sizeof(float)));
-  glEnableVertexAttribArray(1);
+  GLint posIdx = glGetAttribLocation(shaderProgram, "in_position");
+  glVertexAttribPointer(posIdx, 3, GL_FLOAT, GL_FALSE, stride, (void*) nullptr);
+  glEnableVertexAttribArray(posIdx);
 
-  glBindVertexArray(VAO);
-  free(arrayBuffer);
+  GLint colorIdx = glGetAttribLocation(shaderProgram, "in_color");
+  glVertexAttribPointer(colorIdx, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(colorIdx);
+
+  GLint normalIdx = glGetAttribLocation(shaderProgram, "in_normal");
+  glVertexAttribPointer(normalIdx, 3, GL_FLOAT, GL_TRUE, stride, (void*)(6 * sizeof(float)));
+  glEnableVertexAttribArray(normalIdx);
+
+//  glUniformMatrix4fv(glGetUniformLocation, 1, GL_FALSE, );
+
+//  free(arrayBuffer);
 }
 
 void Renderer::render() {
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glEnable(GL_DEPTH_TEST);
+  glBindVertexArray(VAO);
+  glDrawArrays(GL_TRIANGLES, 0, n);
 }
 
 bool Renderer::isAlive() {

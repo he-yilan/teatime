@@ -7,6 +7,7 @@
 #endif
 
 #include <memory>
+#include <vector>
 
 #include "triangle.h"
 
@@ -21,6 +22,7 @@ private:
     bool alive = true;
     unsigned int VAO;
     unsigned int VBO;
+    GLsizei n;
 };
 
 

@@ -16,6 +16,7 @@ typedef struct {
     vec3c c1;
     vec3c p2;
     vec3c c2;
+    vec3c n;
 } Triangle;
 
 #endif //TEATIME_TRIANGLE_H
