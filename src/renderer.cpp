@@ -59,14 +59,16 @@ bool Renderer::isAlive() {
 }
 
 void Renderer::renderParticles() {
-  int timesteps = 10;
-  BBox b; // TODO
+  int timesteps = 10; // TODO: how many timesteps do we need
+  double radius = 1.0; // TODO: what should radius be?
+  BBox b(); // TODO
   Fluid f(b, 997, 10); // density of water =  997 kg/m³ ?
   SPH s;
   for (int i = 0; i < timesteps; ++i) {
     // draw particles to screen using sphere rendering function
     for (Particle *p : f.particles) {
-      sphereMesh.draw_sphere(shader, p->position, 1.0); // radius = 1.0
+      // draw a sphere for every particle
+      sphereMesh.draw_sphere(GL_FRAGMENT_SHADER, p->position, radius * 0.92);
     }
     // update positions
     s.Update(&f);

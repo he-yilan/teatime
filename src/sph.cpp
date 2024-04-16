@@ -4,8 +4,6 @@ using namespace std;
 
 void SPH::Update(Fluid *f) {
 
-  //Build ANN
-
   //Update density, pressure
   for (int i = 0; i < num_particles; i++) {
     Particle *p = f->particles.at(i);
