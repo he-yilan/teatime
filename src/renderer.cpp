@@ -29,6 +29,11 @@ Renderer::Renderer(std::vector<Triangle> &triangles) {
   GLint normalIdx = glGetAttribLocation(shaderProgram, "in_normal");
   glVertexAttribPointer(normalIdx, 3, GL_FLOAT, GL_TRUE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(normalIdx);
+
+  GLint lightIntensityIdx = glGetUniformLocation(shaderProgram, "u_light_intensity");
+  glUniform3f(lightIntensityIdx, 3, 3, 3);
+
+  lightPos = (vec3c*)calloc(1, sizeof(vec3c));
 }
 
 void Renderer::render() {
@@ -44,45 +49,29 @@ void Renderer::render() {
 //  *rot = identity();
   glUniformMatrix3fv(rotIdx, 1, GL_FALSE, (GLfloat*) rot);
 
+  GLint lightPosIdx = glGetUniformLocation(shaderProgram, "u_light_pos");
+  vec3c lightsource = { 0.5, 2, -2 };
+  *lightPos = mul(*rot, lightsource);
+  glUniform3fv(lightPosIdx, 1, (GLfloat*) lightPos);
+
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, n * 3);
 }
 
-bool Renderer::isAlive() {
-  return alive;
-}
-
-<<<<<<< HEAD
-void Renderer::renderParticles() {
-  int timesteps = 10; // TODO: how many timesteps do we need
-  double radius = 1.0; // TODO: what should radius be?
-  BBox b; // TODO
-  Fluid f(b, 997, 10); // density of water =  997 kg/m³ ?
-  SPH s;
-  for (int i = 0; i < timesteps; ++i) {
-    // clear?
-    // draw particles to screen using sphere rendering function
-    for (Particle *p : f.particles) {
-      // draw a sphere for every particle
-      sphereMesh.draw_sphere(GL_FRAGMENT_SHADER, p->position, radius * 0.92);
-    }
-    // update positions
-    s.Update(&f);
-  }
-}
-=======
 //void Renderer::renderParticles() {
-//  int timesteps = 10;
+//  int timesteps = 10; // TODO: how many timesteps do we need
+//  double radius = 1.0; // TODO: what should radius be?
 //  BBox b; // TODO
 //  Fluid f(b, 997, 10); // density of water =  997 kg/m³ ?
 //  SPH s;
 //  for (int i = 0; i < timesteps; ++i) {
+//    // clear?
 //    // draw particles to screen using sphere rendering function
-//    for (Particle *p : f.particles) {
-//      sphereMesh.draw_sphere(shader, p->position, 1.0); // radius = 1.0
+//    for (Particle *p: f.particles) {
+//      // draw a sphere for every particle
+//      sphereMesh.draw_sphere(GL_FRAGMENT_SHADER, p->position, radius * 0.92);
 //    }
 //    // update positions
 //    s.Update(&f);
 //  }
 //}
->>>>>>> 8c5cd8ab1b3cd0e23fa77eaec880cf7cfa48268d

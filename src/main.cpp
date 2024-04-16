@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "renderer.h"
-#include "util.h"
+#include "utils/mathutil.h"
 
 GLFWwindow *window = nullptr;
 Renderer *renderer = nullptr;
@@ -78,7 +78,7 @@ unsigned int loadShaderFromFile(const char *filepath, GLenum type) {
 
 void createShaders() {
   unsigned int vertexShader = loadShaderFromFile("../shaders/Default.vert", GL_VERTEX_SHADER);
-  unsigned int fragmentShader = loadShaderFromFile("../shaders/Normal.frag", GL_FRAGMENT_SHADER);
+  unsigned int fragmentShader = loadShaderFromFile("../shaders/Diffuse.frag", GL_FRAGMENT_SHADER);
 
   GLint shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
@@ -105,6 +105,12 @@ void mouseButtonCallback(GLFWwindow *w, int button, int action, int modifiers) {
 }
 
 void keyCallback(GLFWwindow *w, int key, int scancode, int action, int mods) {
+  switch (key) {
+    case GLFW_KEY_C:
+      if (mods & GLFW_MOD_CONTROL) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+      }
+  }
 }
 
 void charCallback(GLFWwindow *w, unsigned int codepoint) {
@@ -130,11 +136,9 @@ void loadBinarySTL(const char *filepath, std::vector<Triangle> &out) {
   long fileSize = -1;
   readFile(filepath, fileBytes, &fileSize);
 
-  vec3c color = {0.75f, 0.75f, 0.75f};
   int stride = 3 * sizeof(float);
   for (int i = 84; i < fileSize; i += 50) {
     Triangle t;
-//    t.color = color;
     memcpy(&t.n0, &fileBytes[i], stride);
     t.n2 = t.n1 = t.n0;
     memcpy(&t.p0, &fileBytes[i + stride], stride);
@@ -153,11 +157,7 @@ int main(int argc, char **argv) {
   createShaders();
 
   std::vector<Triangle> triangles = std::vector<Triangle>();
-<<<<<<< HEAD
-  loadBinarySTL("../models/teapot_closed.stl", triangles);
-=======
   loadBinarySTL("../models/teapot_closed_small.stl", triangles);
->>>>>>> 8c5cd8ab1b3cd0e23fa77eaec880cf7cfa48268d
   renderer = new Renderer(triangles);
 
   while (!glfwWindowShouldClose(window)) {
@@ -169,10 +169,6 @@ int main(int argc, char **argv) {
     renderer->render();
 
     glfwSwapBuffers(window);
-
-    if (!renderer->isAlive()) {
-      glfwSetWindowShouldClose(window, 1);
-    }
   }
 
   glfwTerminate();

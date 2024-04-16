@@ -24,16 +24,13 @@ set(TEATIME_FILES
         src/triangle.h
         src/renderer.cpp
         src/renderer.h
-        src/util.cpp
-        src/util.h
         src/main.cpp
-#        src/fluid.cpp
-#        src/sph.cpp
-#        src/sphere.h
-#        src/sphere.cpp
-#        src/sphere_drawing.h
+#        src/camera.cpp
+#        src/camera.h
+        src/utils/mathutil.cpp
+        src/utils/mathutil.h
 #        src/sphere_drawing.cpp
-#        src/utils/bbox.cpp
+#        src/sphere_drawing.h
 )
 
 add_executable(teatime WIN32 ${TEATIME_FILES} ${GLAD_GL})
