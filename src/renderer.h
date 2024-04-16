@@ -26,7 +26,7 @@ private:
     unsigned int VAO;
     unsigned int VBO;
     GLsizei n;
-    CGL::Misc::SphereMesh sphereMesh;
+    GLFW::Misc::SphereMesh sphereMesh;
     Triangle *arrayBuffer;
     float r = 0;
 };

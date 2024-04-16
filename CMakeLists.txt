@@ -27,13 +27,13 @@ set(TEATIME_FILES
         src/util.cpp
         src/util.h
         src/main.cpp
-        src/fluid.cpp
-        src/sph.cpp
-        src/sphere.h
-        src/sphere.cpp
-        src/sphere_drawing.h
-        src/sphere_drawing.cpp
-        src/utils/bbox.cpp
+#        src/fluid.cpp
+#        src/sph.cpp
+#        src/sphere.h
+#        src/sphere.cpp
+#        src/sphere_drawing.h
+#        src/sphere_drawing.cpp
+#        src/utils/bbox.cpp
 )
 
 add_executable(teatime WIN32 ${TEATIME_FILES} ${GLAD_GL})

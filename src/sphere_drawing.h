@@ -2,8 +2,9 @@
 #define CGL_UTIL_SPHEREDRAWING_H
 
 #include <vector>
+#include <GLFW/glfw3.h>
 
-namespace CGL {
+namespace GLFW {
 namespace Misc {
   
 class SphereMesh {

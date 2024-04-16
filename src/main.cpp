@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
   createShaders();
 
   std::vector<Triangle> triangles = std::vector<Triangle>();
-  loadBinarySTL("../models/cake_small.stl", triangles);
+  loadBinarySTL("../models/teapot_closed.stl", triangles);
   renderer = new Renderer(triangles);
 
   while (!glfwWindowShouldClose(window)) {
