@@ -1,22 +1,12 @@
 #ifndef TEATIME_TRIANGLE_H
 #define TEATIME_TRIANGLE_H
 
-#include "utils/vector3D.h"
-
-typedef struct vec3c {
-    float x;
-    float y;
-    float z;
-} vec3c;
+#include "util.h"
 
 typedef struct {
-    vec3c p0;
-    vec3c c0;
-    vec3c p1;
-    vec3c c1;
-    vec3c p2;
-    vec3c c2;
-    vec3c n;
+    mat3c points;
+//    vec3c normal;
+//    vec3c color;
 } Triangle;
 
 #endif //TEATIME_TRIANGLE_H
