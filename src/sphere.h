@@ -6,7 +6,7 @@
 #define TEATIME_SPHERE_H
 
 
-class sphere {
+class Sphere {
 
 };
 

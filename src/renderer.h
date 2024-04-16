@@ -10,19 +10,23 @@
 #include <vector>
 
 #include "triangle.h"
+#include "../sphere_drawing.h"
 
+class SphereMesh;
 
 class Renderer {
 public:
     Renderer(std::vector<Triangle> &triangles);
     void render();
     bool isAlive();
+    void renderParticles();
 
 private:
     bool alive = true;
     unsigned int VAO;
     unsigned int VBO;
     GLsizei n;
+    CGL::Misc::SphereMesh sphereMesh;
 };
 
 

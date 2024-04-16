@@ -20,7 +20,7 @@ void Fluid::InitParticles(int n, BBox bb) {
     particle.mass = mass / (float)n;
     particle.velocity = 0; //todo: should particle start at rest?
     particle.density = density;
-    particles.push_back(particle);
+    particles.push_back(&particle);
   }
 }
 

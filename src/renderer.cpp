@@ -1,4 +1,6 @@
 #include "renderer.h"
+#include "fluid.h"
+#include "sph.h"
 
 Renderer::Renderer(std::vector<Triangle> &triangles) {
   int stride = 6 * sizeof(float);
@@ -54,4 +56,19 @@ void Renderer::render() {
 
 bool Renderer::isAlive() {
   return alive;
+}
+
+void Renderer::renderParticles() {
+  int timesteps = 10;
+  BBox b; // TODO
+  Fluid f(b, 997, 10); // density of water =  997 kg/m³ ?
+  SPH s;
+  for (int i = 0; i < timesteps; ++i) {
+    // draw particles to screen using sphere rendering function
+    for (Particle *p : f.particles) {
+      sphereMesh.draw_sphere(shader, p->position, 1.0); // radius = 1.0
+    }
+    // update positions
+    s.Update(&f);
+  }
 }
