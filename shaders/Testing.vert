@@ -1,17 +1,11 @@
 #version 330 core
+in vec3 in_position;
+in vec3 in_color;
+out vec3 out_color;
 
 uniform mat3 u_view_projection;
 
-in vec3 in_position;
-in vec3 in_color;
-in vec3 in_normal;
-
-out vec3 v_position;
-out vec3 v_normal;
-
 void main() {
-  v_position = in_position;
-  v_normal = in_normal;
-
-  gl_Position = vec4(in_position, 1);
+   gl_Position = vec4(u_view_projection * in_position, 1.0);
+   out_color = in_color;
 }

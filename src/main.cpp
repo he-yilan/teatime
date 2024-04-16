@@ -134,11 +134,9 @@ void loadBinarySTL(const char *filepath, std::vector<Triangle> &out) {
   int stride = 3 * sizeof(float);
   for (int i = 84; i < fileSize; i += 50) {
     Triangle t;
-    t.c0 = t.c1 = t.c2 = color;
-    memcpy(&t.n, &fileBytes[i], stride);
-    memcpy(&t.p0, &fileBytes[i + (1 * stride)], stride);
-    memcpy(&t.p1, &fileBytes[i + (2 * stride)], stride);
-    memcpy(&t.p2, &fileBytes[i + (3 * stride)], stride);
+//    t.color = color;
+//    memcpy(&t.normal, &fileBytes[i], stride);
+    memcpy(&t.points, &fileBytes[i + stride], 3 * stride);
     out.emplace_back(t);
   }
 }
@@ -152,7 +150,7 @@ int main(int argc, char **argv) {
   createShaders();
 
   std::vector<Triangle> triangles = std::vector<Triangle>();
-  loadBinarySTL("../models/teapot_closed.stl", triangles);
+  loadBinarySTL("../models/cake_small.stl", triangles);
   renderer = new Renderer(triangles);
 
   while (!glfwWindowShouldClose(window)) {

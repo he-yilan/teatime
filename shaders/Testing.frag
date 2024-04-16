@@ -1,10 +1,6 @@
-#version 330
-
-in vec3 v_position;
-in vec3 v_normal;
-
-out vec3 out_color;
-
+#version 330 core
+out vec4 FragColor;
+in vec3 out_color;
 void main() {
-  out_color = (vec3(1, 1, 1) + v_normal) / 2;
+   FragColor = vec4(1, 0, 1, 1.0f);
 }
