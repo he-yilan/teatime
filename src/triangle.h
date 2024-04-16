@@ -4,9 +4,12 @@
 #include "util.h"
 
 typedef struct {
-    mat3c points;
-//    vec3c normal;
-//    vec3c color;
+    vec3c p0;
+    vec3c n0;
+    vec3c p1;
+    vec3c n1;
+    vec3c p2;
+    vec3c n2;
 } Triangle;
 
 #endif //TEATIME_TRIANGLE_H

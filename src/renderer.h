@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "triangle.h"
-#include "../sphere_drawing.h"
 
 class SphereMesh;
 
@@ -26,7 +25,10 @@ private:
     unsigned int VAO;
     unsigned int VBO;
     GLsizei n;
+<<<<<<< HEAD
     GLFW::Misc::SphereMesh sphereMesh;
+=======
+>>>>>>> 8c5cd8ab1b3cd0e23fa77eaec880cf7cfa48268d
     Triangle *arrayBuffer;
     float r = 0;
 };

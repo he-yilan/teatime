@@ -14,6 +14,14 @@ void readFile(const char *filepath, char *&out, long *fileSize) {
   fclose(fp);
 }
 
+vec3c sub(vec3c &a, vec3c &b) {
+  return {
+          a.x - b.x,
+          a.y - b.y,
+          a.z - b.z
+  };
+}
+
 mat3c transpose(mat3c m) {
   return {
     m.row0.x, m.row1.x, m.row2.x,
