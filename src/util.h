@@ -19,8 +19,9 @@ typedef struct mat3c {
     vec3c row2;
 } mat3c;
 
+vec3c sub(vec3c &a, vec3c &b);
 mat3c identity();
-mat3c transpose(mat3c m);
+mat3c transpose(mat3c &m);
 mat3c mul(mat3c &a, mat3c &b);
 mat3c rotX(float deg);
 mat3c rotY(float deg);
