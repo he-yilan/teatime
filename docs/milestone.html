@@ -51,9 +51,9 @@
 
     <p>These equations are known as the <a href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Navier-Stokes</a> equations, which model the motion of viscous fluids. Since these equations are continuous (and therefore unable to be computed with 100% accuracy), we approximate them using summations - more specifically, given particle $p_i$, we iterate over $p_i$'s neighbors, (calculated using the algorithm outlined below), weighting each neighbor $p_j$ according to a kernel function $K(r)$. This kernel assigns higher values to neighbors that are closer spatially to $p_i$, and vice versa. Summing all neighboring contributions with respect to pressure and viscosity (pressure relying on the gradient $\nabla K(r)$, and viscosity relying on the second derivative $\frac{d^2}{dr^2}K(r)$) gives us $p_i$'s respective accelerations. Finally, with this particle's acceleration and mass, we can calculate the forces acting on $p_i$ for a single timestep $\Delta t$.</p>
 
-    <p>In addition to updating the particles’ positions using the SPH solver, we also support collisions with other objects such as spheres, planes, and boxes (cube without the top face). The particles are able to flow over these objects in a way similar to water. </p>
+    <p>In addition to updating the particles' positions using the SPH solver, we also support collisions with other objects such as spheres, planes, and boxes (cube without the top face). The particles are able to flow over these objects in a way similar to water. </p>
 
-    <p>Much like implementing path tracing in HW3, we quickly reached the computational limits of needing to test proximity for every particle. The acceleration structure we chose to tackle this problem was a grid-based hash map, modeled after <a href="https://diglib.eg.org/bitstream/handle/10.2312/cgvc20191258/055-063.pdf">Fast and Efficient Nearest Neighbor Search for Particle Simulations</a>. When computing the effect of nearby particles on density, pressure, and acceleration, we only consider particles in the same grid cell — approximating the kernel defined for SPH.</p>
+    <p>Much like implementing path tracing in HW3, we quickly reached the computational limits of needing to test proximity for every particle. The acceleration structure we chose to tackle this problem was a grid-based hash map, modeled after <a href="https://diglib.eg.org/bitstream/handle/10.2312/cgvc20191258/055-063.pdf">Fast and Efficient Nearest Neighbor Search for Particle Simulations</a>. When computing the effect of nearby particles on density, pressure, and acceleration, we only consider particles in the same grid cell&#x2014;approximating the kernel defined for SPH.</p>
 
     <p>n parallel with this we have developed an STL rendering engine which takes in binary STL files and renders them using raw OpenGL. Once we have finished rendering fluid dynamics, we intend to use our custom engine to draw all particles. This will be accomplished through each particle being drawn as a sphere, and this custom rendering engine supporting sphere rasterization into triangles.</p>
 
@@ -90,7 +90,7 @@
     <a class="anchor" id="results"></a>
     <div class="subheader center">Preliminary Results</div>
 
-    With our current liquid fluid simulator, the particles fall onto the sphere and splash in a way similar to water.
+    With our current liquid fluid simulator, the particles fall onto the sphere and splash similarly to water.
     <table><tr>
       <td>
         <div class="center">
