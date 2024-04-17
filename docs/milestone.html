@@ -39,21 +39,49 @@
 
   <div class="content-item summary">
     <div class="subheader center">Summary of Current Progress</div>
-    <!--    TODO-->
+    <p>For our project, we aim to create a realistic 3D rendering of a teapot pouring tea into a teacup. So far, we have set up a particle-based fluid simulator based on our cloth simulator. Because cloth is simulated by a system of point masses and springs, by removing the springs, and rendering a sphere for each point mass, we adapt the system to model liquid. Each particle has the properties mass, pressure, density, position, forces, and velocity. We implemented a 3D smoothed particle hydrodynamics (SPH) solver to calculate the positions of the point masses as a result of the accelerations due to density, pressure, and the external forces (gravity) acting on it. At a high level, our simulation is governed by the following physical equations referenced in <a href="https://personal.ems.psu.edu/~fkd/courses/EGEE520/2017Deliverables/SPH_2017.pdf">Penn State EGEE 520</a>:</p>
+
+    <p>$$\frac{dv_i}{dt} = a_i^{pressure} + a_i^{viscosity} + a_i^{gravity}$$</p>
+
+    <p>$$a_i^{pressure} = \langle -\frac{1}{\text{density}}\nabla \text{pressure}\rangle_i$$</p>
+
+    <p>$$a_i^{viscosity} = \langle -\frac{\text{viscosity}}{\text{density}}\nabla \nabla \text{velocity}\rangle_i$$</p>
+
+    <p>$$a_i^{gravity}\approx [0\ 0\ -g]^{T}$$</p>
+
+    <p>These equations are known as the <a href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Navier-Stokes</a> equations, which model the motion of viscous fluids. Since these equations are continuous (and therefore unable to be computed with 100% accuracy), we approximate them using summations - more specifically, given particle $p_i$, we iterate over $p_i$'s neighbors, (calculated using the algorithm outlined below), weighting each neighbor $p_j$ according to a kernel function $K(r)$. This kernel assigns higher values to neighbors that are closer spatially to $p_i$, and vice versa. Summing all neighboring contributions with respect to pressure and viscosity (pressure relying on the gradient $\nabla K(r)$, and viscosity relying on the second derivative $\frac{d^2}{dr^2}K(r)$) gives us $p_i$'s respective accelerations. Finally, with this particle's acceleration and mass, we can calculate the forces acting on $p_i$ for a single timestep $\Delta t$.</p>
     <br /><hr />
   </div>
 
   <div class="content-item results">
     <a class="anchor" id="results"></a>
     <div class="subheader center">Preliminary Results</div>
-    <!--    TODO-->
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/liquid1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/liquid2.gif" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/liquid3.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
     <br /><hr />
   </div>
 
   <div class="content-item links">
     <a class="anchor" id="links"></a>
     <div class="subheader center">Links</div>
-    <!--    TODO-->
+    <p> <a href="https://docs.google.com/presentation/d/14SEVGv0l5pQaIXN-70An11GajxpUUg8R5hs0R1oHcBU/edit?usp=sharing">Slides</a></p>
+    <p>  <a href="https://drive.google.com/file/d/1sr071O1i1JAsfU51wxwCAgff6zCBm16N/view?usp=sharing">Video</a></p>
     <br /><hr />
   </div>
 
