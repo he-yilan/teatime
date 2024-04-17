@@ -1,4 +1,4 @@
-#include "util.h"
+#include "mathutil.h"
 
 void readFile(const char *filepath, char *&out, long *fileSize) {
   FILE *fp = fopen( filepath, "rb");
@@ -19,6 +19,14 @@ vec3c sub(vec3c &a, vec3c &b) {
           a.x - b.x,
           a.y - b.y,
           a.z - b.z
+  };
+}
+
+vec3c mul(mat3c &a, vec3c &b) {
+  return {
+    dot(a.row0, b),
+    dot(a.row1, b),
+    dot(a.row2, b)
   };
 }
 

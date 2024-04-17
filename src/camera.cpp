@@ -1,16 +1,12 @@
 #include "camera.h"
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
-void Camera::configure(const CameraInfo &info, size_t screenW, size_t screenH) {
+void Camera::configure(size_t screenW, size_t screenH) {
   this->screenW = screenW;
   this->screenH = screenH;
-  nClip = info.nClip;
-  fClip = info.fClip;
-  hFov = info.hFov;
-  vFov = info.vFov;
+  nClip = 0.01;
+  fClip = 10000;
+  hFov = 50;
+  vFov = 35;
 
   double ar1 = tan(radians(hFov) / 2) / tan(radians(vFov) / 2);
   ar = static_cast<double>(screenW) / screenH;
@@ -27,8 +23,8 @@ void Camera::configure(const CameraInfo &info, size_t screenW, size_t screenH) {
 void Camera::place(const Vector3D &targetPos, const double phi,
                    const double theta, const double r, const double minR,
                    const double maxR) {
-  double r_ = min(max(r, minR), maxR);
-  double phi_ = (sin(phi) == 0) ? (phi + EPS_F) : phi;
+  double r_ = std::min(std::max(r, minR), maxR);
+  double phi_ = (sin(phi) == 0) ? (phi + FLT_EPSILON) : phi;
   this->targetPos = targetPos;
   this->phi = phi_;
   this->theta = theta;
@@ -36,16 +32,6 @@ void Camera::place(const Vector3D &targetPos, const double phi,
   this->minR = minR;
   this->maxR = maxR;
   compute_position();
-}
-
-void Camera::copy_placement(const Camera &other) {
-  pos = other.pos;
-  targetPos = other.targetPos;
-  phi = other.phi;
-  theta = other.theta;
-  minR = other.minR;
-  maxR = other.maxR;
-  c2w = other.c2w;
 }
 
 void Camera::set_screen_size(const size_t screenW, const size_t screenH) {
@@ -65,7 +51,7 @@ void Camera::move_by(const double dx, const double dy, const double d) {
 }
 
 void Camera::move_forward(const double dist) {
-  double newR = min(max(r - dist, minR), maxR);
+  double newR = std::min(std::max(r - dist, minR), maxR);
   pos = targetPos + ((pos - targetPos) * (newR / r));
   r = newR;
 }
@@ -79,7 +65,7 @@ void Camera::rotate_by(const double dPhi, const double dTheta) {
 void Camera::compute_position() {
   double sinPhi = sin(phi);
   if (sinPhi == 0) {
-    phi += EPS_F;
+    phi += FLT_EPSILON;
     sinPhi = sin(phi);
   }
   const Vector3D dirToCamera(r * sinPhi * sin(theta), r * cos(phi),
@@ -100,36 +86,46 @@ void Camera::compute_position() {
                                // to the world space view direction
 }
 
-void Camera::dump_settings(string filename) {
-  ofstream file(filename);
-  file << hFov << " " << vFov << " " << ar << " " << nClip << " " << fClip
-       << endl;
-  for (int i = 0; i < 3; ++i)
-    file << pos[i] << " ";
-  for (int i = 0; i < 3; ++i)
-    file << targetPos[i] << " ";
-  file << endl;
-  file << phi << " " << theta << " " << r << " " << minR << " " << maxR << endl;
-  for (int i = 0; i < 9; ++i)
-    file << c2w(i / 3, i % 3) << " ";
-  file << endl;
-  file << screenW << " " << screenH << " " << screenDist << endl;
-  cout << "[Camera] Dumped settings to " << filename << endl;
+Matrix4f Camera::getProjectionMatrix() {
+  Matrix4f perspective;
+  perspective.setZero();
+
+  double theta = vFov * PI / 360;
+  double range = fClip - nClip;
+  double invtan = 1. / tanf(theta);
+
+  return {
+          invtan / ar, 0, 0, 0,
+          0, invtan, 0, 0,
+          0, 0, -(nClip + fClip) / range, -2 * nClip * fClip / range,
+          0, 0, -1, 0
+  };
+
+  return perspective;
 }
 
-void Camera::load_settings(string filename) {
-  ifstream file(filename);
+Matrix4f Camera::getViewMatrix() {
+  Matrix4f lookAt;
+  Matrix3f R;
 
-  file >> hFov >> vFov >> ar >> nClip >> fClip;
-  for (int i = 0; i < 3; ++i)
-    file >> pos[i];
-  for (int i = 0; i < 3; ++i)
-    file >> targetPos[i];
-  file >> phi >> theta >> r >> minR >> maxR;
-  for (int i = 0; i < 9; ++i)
-    file >> c2w(i / 3, i % 3);
-  file >> screenW >> screenH >> screenDist;
-  cout << "[Camera] Loaded settings from " << filename << endl;
+  lookAt.setZero();
+
+  // Convert CGL vectors to Eigen vectors
+  // TODO: Find a better way to do this!
+
+  CGL::Vector3D c_udir = c2w[1];
+
+  Vector3f eye(pos.x, pos.y, pos.z);
+  Vector3f up(c_udir.x, c_udir.y, c_udir.z);
+  Vector3f target(targetPos.x, targetPos.y, targetPos.z);
+
+  R.col(2) = (eye - target).normalized();
+  R.col(0) = up.cross(R.col(2)).normalized();
+  R.col(1) = R.col(2).cross(R.col(0));
+
+  lookAt.topLeftCorner<3, 3>() = R.transpose();
+  lookAt.topRightCorner<3, 1>() = -R.transpose() * eye;
+  lookAt(3, 3) = 1.0f;
+
+  return lookAt;
 }
-
-} // namespace CGL

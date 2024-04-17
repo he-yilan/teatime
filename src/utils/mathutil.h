@@ -1,5 +1,5 @@
-#ifndef TEATIME_UTIL_H
-#define TEATIME_UTIL_H
+#ifndef TEATIME_MATHUTIL_H
+#define TEATIME_MATHUTIL_H
 
 #define PI 3.141529
 
@@ -20,6 +20,8 @@ typedef struct mat3c {
 } mat3c;
 
 vec3c sub(vec3c &a, vec3c &b);
+vec3c mul(mat3c &a, vec3c &b);
+
 mat3c identity();
 mat3c transpose(mat3c &m);
 mat3c mul(mat3c &a, mat3c &b);
@@ -28,6 +30,27 @@ mat3c rotY(float deg);
 mat3c rotZ(float deg);
 inline float dot(vec3c a, vec3c b);
 
+template<typename T>
+inline T radians(T deg) {
+  return deg * (PI / 180);
+}
+
+template<typename T>
+inline T degrees(T rad) {
+  return rad * (180 / PI);
+}
+
+template<typename T>
+inline T clamp(T v, T min, T max) {
+  if (v >= min && v <= max) {
+    return v;
+  } else if (v < min) {
+    return min;
+  } else if (v > max) {
+    return max;
+  }
+}
+
 void readFile(const char *filepath, char *&out, long *fileSize);
 
-#endif //TEATIME_UTIL_H
+#endif //TEATIME_MATHUTIL_H

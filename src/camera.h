@@ -2,14 +2,15 @@
 #define CGL_CAMERA_H
 
 #include <iostream>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <cstdlib>
+#include <cmath>
 
-#include "math.h"
+#include "utils/vector3D.h"
+#include "utils/mathutil.h"
 
-namespace CGL {
-
-/**
- * Camera.
- */
 class Camera {
 public:
   /*
@@ -19,21 +20,13 @@ public:
           of view is expanded along whichever dimension is too narrow.
     NOTE2: info.hFov and info.vFov are expected to be in DEGREES.
   */
-  void configure(const Collada::CameraInfo &info, size_t screenW,
-                 size_t screenH);
+  void configure(size_t screenW, size_t screenH);
 
   /*
     Phi and theta are in RADIANS.
   */
   void place(const Vector3D &targetPos, const double phi, const double theta,
              const double r, const double minR, const double maxR);
-
-  string param_string() { return ""; }
-
-  /*
-    Copies just placement data from the other camera.
-  */
-  void copy_placement(const Camera &other);
 
   /*
     Updates the screen size to be the specified size, keeping screenDist
@@ -66,9 +59,6 @@ public:
   double near_clip() const { return nClip; }
   double far_clip() const { return fClip; }
 
-  virtual void dump_settings(std::string filename);
-  virtual void load_settings(std::string filename);
-
 private:
   // Computes pos, screenXDir, screenYDir from target, r, phi, theta.
   void compute_position();
@@ -92,7 +82,5 @@ private:
   size_t screenW, screenH;
   double screenDist;
 };
-
-} // namespace CGL
 
 #endif // CGL_CAMERA_H

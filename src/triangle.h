@@ -1,7 +1,7 @@
 #ifndef TEATIME_TRIANGLE_H
 #define TEATIME_TRIANGLE_H
 
-#include "util.h"
+#include "utils/mathutil.h"
 
 typedef struct {
     vec3c p0;
