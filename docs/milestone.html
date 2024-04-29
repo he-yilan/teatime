@@ -55,7 +55,7 @@
 
     <p>Much like implementing path tracing in HW3, we quickly reached the computational limits of needing to test proximity for every particle. The acceleration structure we chose to tackle this problem was a grid-based hash map, modeled after <a href="https://diglib.eg.org/bitstream/handle/10.2312/cgvc20191258/055-063.pdf">Fast and Efficient Nearest Neighbor Search for Particle Simulations</a>. When computing the effect of nearby particles on density, pressure, and acceleration, we only consider particles in the same grid cell&#x2014;approximating the kernel defined for SPH.</p>
 
-    <p>n parallel with this we have developed an STL rendering engine which takes in binary STL files and renders them using raw OpenGL. Once we have finished rendering fluid dynamics, we intend to use our custom engine to draw all particles. This will be accomplished through each particle being drawn as a sphere, and this custom rendering engine supporting sphere rasterization into triangles.</p>
+    <p>In parallel with this we have developed an STL rendering engine which takes in binary STL files and renders them using raw OpenGL. Once we have finished rendering fluid dynamics, we intend to use our custom engine to draw all particles. This will be accomplished through each particle being drawn as a sphere, and this custom rendering engine supporting sphere rasterization into triangles.</p>
 
     <p>A binary STL follows a simple format which can be parsed while reading a file in binary mode:</p>
 
