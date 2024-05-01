@@ -64,13 +64,13 @@
     <p>In order to create a arc-like stream of fluid originating from the teapot spout and ending at the teacup, we initialize each particle with a starting velocity. It took many trials and errors to fine tune the $x$, $y$, and $z$ components of our starting velocity to achieve the perfect movement. To simulate a continuous stream, we repeatedly spawn batches of particles at the spout every ~100 time steps.</p>
 
     <h2>STL Renderer</h2>
-    <p>Using Blender, we modeled a teacup and imported Blender’s premade teapot mesh to create our scene. We positioned the teacup and teapot next to each other with the teapot slightly raised above it and rotated, as if it were pouring tea into the cup. We exported this as an STL file which stores the values of the points and normals of the triangles in the triangle mesh. Given this information, we built an STL renderer to render the teaset model.</p>
+    <p>Using Blender, we modeled a teacup and imported Blender's premade teapot mesh to create our scene. We positioned the teacup and teapot next to each other with the teapot slightly raised above it and rotated, as if it were pouring tea into the cup. We exported this as an STL file which stores the values of the points and normals of the triangles in the triangle mesh. Given this information, we built an STL renderer to render the teaset model.</p>
 
     <h2>Collisions</h2>
     Having loaded the STL file, we store the triangles as a bounding volume hierarchy (BVH) tree to check for intersections between the particles and triangles efficiently. Thus, in addition to spheres, planes, and boxes, we support collisions with the triangle meshes that make up the teacup and teapot.
 
     <h2>Optimizations</h2>
-    <p>To iterate over each particle’s neighbors for the SPH solver, testing proximity for each particle was computationally infeasible. Thus, the acceleration structure we chose to tackle this problem was a grid-based hash map, modeled after <a href="https://diglib.eg.org/bitstream/handle/10.2312/cgvc20191258/055-063.pdf">Fast and Efficient Nearest Neighbor Search for Particle Simulations</a>. When computing the effect of nearby particles on density, pressure, and acceleration, we only consider particles in the same grid cell — approximating the kernel defined for SPH.</p>
+    <p>To iterate over each particle's neighbors for the SPH solver, testing proximity for each particle was computationally infeasible. Thus, the acceleration structure we chose to tackle this problem was a grid-based hash map, modeled after <a href="https://diglib.eg.org/bitstream/handle/10.2312/cgvc20191258/055-063.pdf">Fast and Efficient Nearest Neighbor Search for Particle Simulations</a>. When computing the effect of nearby particles on density, pressure, and acceleration, we only consider particles in the same grid cell&#x2014;approximating the kernel defined for SPH.</p>
 
     <p>Similarly, our BVH tree optimizes our system to handle collisions by only checking for particle-triangle collisions in a bounding box, based on the position of the particle. Because we recursively check for collisions with a bounding box, the tree structure limits the depth of recursion.</p>
 
@@ -105,6 +105,22 @@
   <div class="content-item results">
     <a class="anchor" id="results"></a>
     <div class="subheader center">Results</div>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/mirror.gif" class="single-image" /><br />
+          <span>scene with mirror shading</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/normal.gif" class="single-image" /><br />
+          <span>scene with normal shading</span>
+        </div>
+      </td>
+    </tr>
+    </table>
 
     <h2>Particle Counts</h2>
     <p>As the number of particles spawned per 100 timesteps increases, the fluid becomes thicker and renders more slowly. It also eventually reaches the bounding box and stops being rendered. </p>
