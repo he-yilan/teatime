@@ -132,6 +132,7 @@
 
     <h2>Marching Cube Counts</h2>
     <p>As the number of particles spawned per 100 timesteps increases, the fluid becomes thicker and renders more slowly. It also eventually reaches the bounding box and stops being rendered. </p>
+
     <table><tr>
       <td>
         <div class="center">
@@ -152,12 +153,52 @@
         </div>
       </td>
     </tr>
+    </table>
+
 
     <h2>Spawn Frequency</h2>
-<!--    TODO-->
+    <p>The spawn frequency is the rate at which the particles are spawned out of the teapot. This is parameterized in the code as $N$. The images below show the effect of different values of $N$. In general, a lower $N$ leads to the particles sticking together and falling directly out of the teapot. Conversely, a higher value of $N$ leads to the particles overshooting the teapot. The value of $N=100$ was chosen to be nominal as it resulted in the most accurate fluid trajectory in air.</p>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/spawn_freq_10.gif" class="single-image" /><br />
+          <span>N=10</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/spawn_freq_100.gif" class="single-image" /><br />
+          <span>N=100</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/spawn_freq_1000.gif" class="single-image" /><br />
+          <span>N=1000</span>
+        </div>
+      </td>
+    </tr>
+    </table>
 
     <h2>Velocity</h2>
-<!--    TODO-->
+    <p>We observe that altering the initial velocity has a demonstrable effect on the trajectory of the liquid. As the y component of the initial velocity increases, the liquid sprays up and overshoots the teacup.</p>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/near_traj.gif" class="single-image" /><br />
+          <span>Initial Velocity: x =-0.13, y = 2, z= 0.7</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/far_traj.gif" class="single-image" /><br />
+          <span>Initial Velocity: x = -2, y = 3, z = 0.7</span>
+        </div>
+      </td>
+    </tr>
+    </table>
 
     <br /><hr />
   </div>
