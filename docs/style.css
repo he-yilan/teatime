@@ -1,11 +1,11 @@
 html {
   scroll-behavior: smooth;
 }
-  
+
 body {
   width: 100%;
   margin: 0;
-  font-family: Roboto, Sans-Serif;
+  font-family: Roboto, sans-serif;
   /* color: #ececec; */
   background-color: white;
 }
@@ -42,6 +42,19 @@ body {
 
 .center {
   text-align: center;
+}
+
+table {
+  margin: 0px auto;
+}
+
+.number-table td {
+  border: 2px solid black;
+  padding: 5px;
+}
+
+.number-table table {
+  border-collapse: collapse;
 }
 
 .code {

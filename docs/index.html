@@ -27,27 +27,145 @@
     <li class="nonlogo"><a href="./proposal.html">PROPOSAL</a></li>
     <li class="nonlogo"><a href="./milestone.html">MILESTONE</a></li>
     <li class="nonlogo"><a href="./index.html">WRITEUP</a></li>
-    <li class="nonlogo"><a href="https://github.com/he-yilan/teatime" target="_blank">CODE <i style="font-size:12px" class="fa">&#xf08e;</i></a></li>
+    <li class="nonlogo"><a href="https://github.com/ageor0114/fluid-playground/" target="_blank">CODE <i style="font-size:12px" class="fa">&#xf08e;</i></a></li>
   </ul>
 </div>
 
 <div class="submenu">
-  <a class="anchor" id="writeup"></a>
   <div class="header">Tea Time! A Realistic Teapot Simulation</div>
   <div class="subheader center">CS 184/284A: Computer Graphics and Imaging, Spring 2024</div>
   <div class="subheader center">Elana Ho, Nikhil Ograin, Austin George, Josiah Adrineda</div>
   <br /><hr />
 
-  <div class="content-item overview">
-    <div class="subheader center">Overview</div>
-    <!--    TODO-->
+  <div class="content-item abstract">
+    <a class="anchor" id="abstract"></a>
+    <div class="subheader center">Abstract</div>
+
+    <p>Fluid simulation has been a widely researched field in computer graphics for decades. For our project, we create a fluid simulation involving complex geometries in a scene with a teapot pouring tea into a teacup. The tea is represented by a moving stream of liquid, and to create our scene, we support collisions with complex objects built from triangle meshes. We first implemented fluid dynamics using a particle-based approach controlled by a 3D smoothed particle hydrodynamics (SPH) solver. Then, we reconstructed the surface of the fluid using the Marching Cubes algorithm. To have the liquid interact with the teaset, we check for triangle-particle collisions, affecting the movement and position of the fluid. Our implementation of surface collisions allows us to generalize beyond planes to any arbitrarily complex polygon mesh&#x2014;from teapots to tugboats.</p>
+
     <br /><hr />
   </div>
 
-  <div class="content-item part1">
-    <a class="anchor" id="part1"></a>
-    <div class="subheader center">Part 1</div>
-    <!--    TODO-->
+
+  <div class="content-item tech">
+    <a class="anchor" id="tech"></a>
+    <div class="subheader center">Technical Approach</div>
+
+    <h2>Fluid Simulation</h2>
+    <p>Building off of our cloth simulator, we set up a particle-based fluid simulator. Because cloth is simulated by a system of point masses and springs, by removing the springs, and rendering a sphere for each point mass, we adapt the system to model liquid. Each particle has the properties mass, pressure, density, position, forces, and velocity. We implemented a 3D smoothed particle hydrodynamics (SPH) solver to calculate the positions of the point masses as a result of the accelerations due to density, pressure, and the external forces (gravity) acting on it. At a high level, our simulation is governed by the following physical equations referenced in <a href="https://personal.ems.psu.edu/~fkd/courses/EGEE520/2017Deliverables/SPH_2017.pdf">Penn State EGEE 520</a>:</p>
+
+    $$\frac{dv_i}{dt} = a_i^{pressure} + a_i^{viscosity} + a_i^{gravity}$$
+    $$a_i^{pressure} = \langle -\frac{1}{\text{density}}\nabla \text{pressure}\rangle_i$$
+    $$a_i^{viscosity} = \langle -\frac{\text{viscosity}}{\text{density}}\nabla \nabla \text{velocity}\rangle_i$$
+    $$a_i^{gravity}\approx [0\ 0\ -g]^{T}$$
+
+    <p>These equations are known as the <a href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Navier-Stokes</a> equations, which model the motion of viscous fluids. Since these equations are continuous (and therefore unable to be computed with 100% accuracy), we approximate them using summations - more specifically, given particle $p_i$, we iterate over $p_i$'s neighbors, (calculated using the algorithm outlined below), weighting each neighbor $p_j$ according to a kernel function $K(r)$. This kernel assigns higher values to neighbors that are closer spatially to $p_i$, and vice versa. Summing all neighboring contributions with respect to pressure and viscosity (pressure relying on the gradient $\nabla K(r)$, and viscosity relying on the second derivative $\frac{d^2}{dr^2}K(r)$) gives us $p_i$'s respective accelerations. Finally, with this particle's acceleration and mass, we can calculate the forces acting on $p_i$ for a single timestep $\Delta t$.</p>
+
+    <p>In order to create a arc-like stream of fluid originating from the teapot spout and ending at the teacup, we initialize each particle with a starting velocity. It took many trials and errors to fine tune the $x$, $y$, and $z$ components of our starting velocity to achieve the perfect movement. To simulate a continuous stream, we repeatedly spawn batches of particles at the spout every ~100 time steps.</p>
+
+    <h2>STL Renderer</h2>
+    <p>Using Blender, we modeled a teacup and imported Blender’s premade teapot mesh to create our scene. We positioned the teacup and teapot next to each other with the teapot slightly raised above it and rotated, as if it were pouring tea into the cup. We exported this as an STL file which stores the values of the points and normals of the triangles in the triangle mesh. Given this information, we built an STL renderer to render the teaset model.</p>
+
+    <h2>Collisions</h2>
+    Having loaded the STL file, we store the triangles as a bounding volume hierarchy (BVH) tree to check for intersections between the particles and triangles efficiently. Thus, in addition to spheres, planes, and boxes, we support collisions with the triangle meshes that make up the teacup and teapot.
+
+    <h2>Optimizations</h2>
+    <p>To iterate over each particle’s neighbors for the SPH solver, testing proximity for each particle was computationally infeasible. Thus, the acceleration structure we chose to tackle this problem was a grid-based hash map, modeled after <a href="https://diglib.eg.org/bitstream/handle/10.2312/cgvc20191258/055-063.pdf">Fast and Efficient Nearest Neighbor Search for Particle Simulations</a>. When computing the effect of nearby particles on density, pressure, and acceleration, we only consider particles in the same grid cell — approximating the kernel defined for SPH.</p>
+
+    <p>Similarly, our BVH tree optimizes our system to handle collisions by only checking for particle-triangle collisions in a bounding box, based on the position of the particle. Because we recursively check for collisions with a bounding box, the tree structure limits the depth of recursion.</p>
+
+    <p>Unlike light rays, which can intersect both the left & right bounding boxes, a single point mass can only occupy at most one of the two at any given time. This allows us to short circuit our traversal sooner and optimize the runtime of intersection tests.</p>
+
+    <p>We also utilized OpenMP to parallelize certain tasks. To do this, we <span class="code">#pragma omp parallel for</span> directive above each iterative loop, with an additional keyword of <span class="code">collapse(n)</span> for n-level nested loops (for example, <span class="code">n=3</span> with marching cubes algorithms).</p>
+
+    <h2>Surface Reconstruction</h2>
+    <p>To accomplish surface reconstruction, we used the <a href="https://dl.acm.org/doi/pdf/10.1145/280811.281026">Marching Cubes algorithm</a>. At a high level, we takes the following steps:</p>
+
+    <ol>
+      <li>Initialize a grid of vertices across our world space (representing the vertices of our Marching Cubes)</li>
+      <li>For each point mass, identify the 8 nearest vertices and add itself to their lists of neighbors</li>
+      <li>Compute the density at each vertex</li>
+      <li>Compute the *activation* at each vertex (1 if $\rho>\rho_{\text{rest}}$, 0 otherwise)</li>
+      <li>For each cube, use the cube’s 8 vertex *activations* to access the corresponding triangulated cube from a table of all 256 triangulated cubes</li>
+      <li>Render the triangles of each selected triangulated cube onto the scene</li>
+    </ol>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/surface-reconstruction.png" class="single-image" /><br />
+          <span>Triangulated Cubes</span>
+        </div>
+      </td>
+    </table>
+
+    <br /><hr />
+  </div>
+
+  <div class="content-item results">
+    <a class="anchor" id="results"></a>
+    <div class="subheader center">Results</div>
+
+    <h2>Particle Counts</h2>
+<!--    TODO-->
+
+    <h2>Marching Cube Counts</h2>
+<!--    TODO-->
+
+    <h2>Spawn Frequency</h2>
+<!--    TODO-->
+
+    <h2>Velocity</h2>
+<!--    TODO-->
+
+    <br /><hr />
+  </div>
+
+  <div class="content-item links">
+    <a class="anchor" id="links"></a>
+    <div class="subheader center">Links</div>
+
+<!--    TODO-->
+    <p><a href="">Video</a></p>
+
+    <p><a href="https://docs.google.com/presentation/d/1lgBviphswes6hlUBUFaMrEl2R2pbpW_jCttPmegh7iM/edit?usp=sharing">Slides</a></p>
+
+    <br /><hr />
+  </div>
+
+  <div class="content-item references">
+    <a class="anchor" id="references"></a>
+    <div class="subheader center">References</div>
+
+    <p>Braley, C., & Sandu, A. (2010). Fluid simulation for computer graphics: A tutorial in grid based and particle based methods. <em>Virginia Tech, Blacksburg</em>.</p>
+
+    <p><em>Homework 4: Cloth Sim</em>. CS184/284A: Homework 4: Cloth Sim. (n.d.). https://cs184.eecs.berkeley.edu/sp24/docs/hw4</p>
+
+    <p>Gross, J., Köster, M., & Krüger, A. (2019). Fast and Efficient Nearest Neighbor Search for Particle Simulations. In<em>CGVC</em>(pp. 55-63).</p>
+
+    <p>Lorensen, W. E., & Cline, H. E. (1998). Marching cubes: A high resolution 3D surface construction algorithm. In<em>Seminal graphics: pioneering efforts that shaped the field</em>(pp. 347-353).</p>
+
+    <p>Nasreldeen, A., Fan, L., & Liu, K. (2017). Smooth Particle Hydrodynamics (SPH) Group Presentation EGEE 520 Course Spring 2017 . Penn State University College of Earth and Mineral Science Department of Energy and Mineral Engineering.</p>
+
+    <p>Rogue_Knight3D. (2021, January 23). <em>How to make a cup in Blender || Blender Tutorial for beginners || Quick and Easy Cups</em>. YouTube. https://youtu.be/4yHRhgwSTHE?si=qJJRFumlMKk_RVAX</p>
+
+    <br /><hr />
+  </div>
+
+  <div class="content-item contributions">
+    <a class="anchor" id="contributions"></a>
+    <div class="subheader center">Contributions</div>
+
+    <p>It was wonderful to work together as a team, and we all played an integral role in the implementation of our project and contributed equally to the proposal, milestone, and final writeups and presentations.</p>
+
+    <p>Elana modeled the teaset in Blender, worked on rendering the particles and triangle meshes in the Marching Cubes algorithm, contributed to the implementation of particle-surface intersections, researched algorithms and approaches for fluid simulation and surface reconstruction, and built the website that displays our work.</p>
+
+    <p>Nikhil developed an STL renderer to display STL files exported from Blender. Originally he also developed a skeleton for a wholly custom (i.e. from OpenGL native calls) rendering pipeline - though this was later adapted into a different structure. In addition, he worked on OpenMP implementation to parallelize Marching Cubes subtasks.</p>
+
+    <p>Austin implemented the acceleration structure for computing nearest neighbors of particles. He implemented the BVH construction, traversal, and particle-surface intersection for teapot collisions. He also researched options for surface reconstruction and contributed to the implementation of Marching Cubes.</p>
+
+    <p>Josiah implemented the SPH solver for calculating the various properties of particles, as well as created a custom shader to visualize the pressure of these particles. He also contributed to the implementation of Marching Cubes.</p>
+
     <br /><hr />
   </div>
 
