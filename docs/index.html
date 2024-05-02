@@ -193,7 +193,7 @@
       </td>
     </table>
 
-    <h2>Texture Mapping</h2>
+    <h2>Shaders</h2>
 
     <table><tr>
       <td>
@@ -205,6 +205,88 @@
     </table>
 
     <p>In general, for rendering, an object uses the most recently-bound shader. Specifically, for HW4's "Texture" shader and plane collision object, after applying the texture to the cloth (whose $uv$ coordinates were calculated correctly), it is implicitly applied to the plane. Since, by default, the plane doesn't set any $uv$ attribute, the texture is incorrectly mapped. By modifying <span class="code">plane.cpp</span>  such that the bounds of the image span the plane, the texture is correctly mapped. For our purposes, this results in a glossy marble table surface for our teaset to rest on!</p>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/shader1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/shader2.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/shader3.png" class="single-image" /><br />
+          <span>Mirror shading with dining room cube map</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/shader4.png" class="single-image" /><br />
+          <span>Closeup of mirror shading with dining room cube map</span>
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/shader5.png" class="single-image" /><br />
+          <span>Honey-like tea with sky cube map</span>
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/clear1.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/clear2.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/clear3.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/clear4.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/clear5.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/clear6.png" class="single-image" /><br />
+        </div>
+      </td>
+    </tr>
+    </table>
 
     <br /><hr />
   </div>
