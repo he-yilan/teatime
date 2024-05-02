@@ -72,6 +72,16 @@
     <div class="subheader center">Technical Approach</div>
 
     <h2>Fluid Simulation</h2>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/particles_sphere.gif" class="single-image" /><br />
+          <span>100 particles colliding with sphere</span>
+        </div>
+      </td>
+    </table>
+
     <p>Building off of our cloth simulator, we set up a particle-based fluid simulator. Because cloth is simulated by a system of point masses and springs, by removing the springs, and rendering a sphere for each point mass, we adapt the system to model liquid. Each particle has the properties mass, pressure, density, position, forces, and velocity. We implemented a 3D smoothed particle hydrodynamics (SPH) solver to calculate the positions of the point masses as a result of the accelerations due to density, pressure, and the external forces (gravity) acting on it. At a high level, our simulation is governed by the following physical equations referenced in <a href="https://personal.ems.psu.edu/~fkd/courses/EGEE520/2017Deliverables/SPH_2017.pdf">Penn State EGEE 520</a>:</p>
 
     $$\frac{dv_i}{dt} = a_i^{pressure} + a_i^{viscosity} + a_i^{gravity}$$
@@ -84,9 +94,45 @@
     <p>In order to create a arc-like stream of fluid originating from the teapot spout and ending at the teacup, we initialize each particle with a starting velocity. It took many trials and errors to fine tune the $x$, $y$, and $z$ components of our starting velocity to achieve the perfect movement. To simulate a continuous stream, we repeatedly spawn batches of particles at the spout every ~100 time steps.</p>
 
     <h2>STL Renderer</h2>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/teaset_blender.png" class="single-image" /><br />
+          <span>Tea set made in blender</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/STL_with_marchingCubes.png" class="single-image" /><br />
+          <span>Rendered tea set STL</span>
+        </div>
+      </td>
+    </table>
+
     <p>Using Blender, we modeled a teacup and imported Blender's premade teapot mesh to create our scene. We positioned the teacup and teapot next to each other with the teapot slightly raised above it and rotated, as if it were pouring tea into the cup. We exported this as an STL file which stores the values of the points and normals of the triangles in the triangle mesh. Given this information, we built an STL renderer to render the teaset model.</p>
 
     <h2>Collisions</h2>
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/collisions_normal.png" class="single-image" /><br />
+          <span>Particles colliding with the teacup with normal shading</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/collisions_mirror.png" class="single-image" /><br />
+          <span>Liquid pooling in the teacup with mirror shading</span>
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/collisions_phong.png" class="single-image" /><br />
+          <span>Liquid pooling in the teacup with Phong shading</span>
+        </div>
+      </td>
+    </table>
 
     <p>Having loaded the STL file, we store the triangles as a bounding volume hierarchy (BVH) tree to check for intersections between the particles and triangles efficiently. Thus, in addition to spheres, planes, and boxes, we support collisions with the triangle meshes that make up the teacup and teapot.</p>
 
@@ -100,6 +146,33 @@
     <p>We also utilized OpenMP to parallelize certain tasks. To do this, we <span class="code">#pragma omp parallel for</span> directive above each iterative loop, with an additional keyword of <span class="code">collapse(n)</span> for n-level nested loops (for example, <span class="code">n=3</span> with marching cubes algorithms).</p>
 
     <h2>Surface Reconstruction</h2>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/marching_normal.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/marching_mirror.png" class="single-image" /><br />
+        </div>
+      </td>
+    </table>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/marching_normal_blob.png" class="single-image" /><br />
+        </div>
+      </td>
+      <td>
+        <div class="center">
+          <img src="images/marching_mirror_blob.png" class="single-image" /><br />
+        </div>
+      </td>
+    </table>
+
     <p>To accomplish surface reconstruction, we used the <a href="https://dl.acm.org/doi/pdf/10.1145/280811.281026">Marching Cubes algorithm</a>. At a high level, we takes the following steps:</p>
 
     <ol>
@@ -107,7 +180,7 @@
       <li>For each point mass, identify the 8 nearest vertices and add itself to their lists of neighbors</li>
       <li>Compute the density at each vertex</li>
       <li>Compute the *activation* at each vertex (1 if $\rho>\rho_{\text{rest}}$, 0 otherwise)</li>
-      <li>For each cube, use the cube’s 8 vertex *activations* to access the corresponding triangulated cube from a table of all 256 triangulated cubes</li>
+      <li>For each cube, use the cube's 8 vertex *activations* to access the corresponding triangulated cube from a table of all 256 triangulated cubes</li>
       <li>Render the triangles of each selected triangulated cube onto the scene</li>
     </ol>
 
@@ -121,6 +194,15 @@
     </table>
 
     <h2>Texture Mapping</h2>
+
+    <table><tr>
+      <td>
+        <div class="center">
+          <img src="images/mirror_floral_water.gif" class="single-image" /><br />
+          <span>Tea set with mirror shading, plane with floral texture, and translucent water</span>
+        </div>
+      </td>
+    </table>
 
     <p>In general, for rendering, an object uses the most recently-bound shader. Specifically, for HW4's "Texture" shader and plane collision object, after applying the texture to the cloth (whose $uv$ coordinates were calculated correctly), it is implicitly applied to the plane. Since, by default, the plane doesn't set any $uv$ attribute, the texture is incorrectly mapped. By modifying <span class="code">plane.cpp</span>  such that the bounds of the image span the plane, the texture is correctly mapped. For our purposes, this results in a glossy marble table surface for our teaset to rest on!</p>
 
